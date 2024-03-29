@@ -3427,16 +3427,14 @@ input, select, textarea {
 			background-size: 100% 100%;
 			content: '';
 			display: block;
-			height: 150px;
 			left: 0;
 			position: absolute;
 			top: 0;
-			width: 150px;
+			
 		}
 
 		#intro .logo img {
 			display: block;
-			margin-left: -0.25em;
 			height: 150px;
 			width: 150px;
 		}
