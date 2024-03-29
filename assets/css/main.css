@@ -3417,7 +3417,7 @@ input, select, textarea {
 		margin: 0 0 1em 0;
 		overflow: hidden;
 		position: relative;
-		width: 100px;
+		/* width: 100px; */
 	}
 
 		#intro .logo:before {
