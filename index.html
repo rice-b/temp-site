@@ -4,6 +4,25 @@
 		
 		<!-- Analytics data -->
 		<script defer src="https://analytics.eu.umami.is/script.js" data-website-id="a2e7c66d-476c-43fe-bf12-a4c0250c08a0"></script>
+		<script>
+			document.addEventListener('click', function (event) {
+			var link = event.target;
+			while(link && (typeof link.tagName == 'undefined' || link.tagName.toLowerCase() != 'a' || !link.href)) {
+		      	link = link.parentNode
+		    	}
+		
+		    	if (link && link.href && link.host && link.host !== location.host) {
+		      	umami.track('Outbound Link', { link: link.href });
+		
+		      	// Allow event to be sent before the page is unloaded
+		      	if(!link.target || link.target.match(/^_(self|parent|top)$/i)) {
+		        setTimeout(function() { location.href = link.href; }, 150);
+		        event.preventDefault();
+		      	}
+		    	}
+		  	})
+		</script>
+
 		<!-- Meta data -->
 		<title>Brendan Rice</title>
 		<meta charset="utf-8" />
@@ -109,7 +128,7 @@
 									</div>
 									
 								</header>
-								<p>Please feel free to read more <a href="index.html#about">about me</a>, or you can check out my <a href="work.html">work experience</a>, <a href="education.html">education</a> & continued development, <a href="interests.html">interests</a> or <a href="contact.html">contact</a> me.</p>
+								<p>Please feel free to read more <a href="index#about">about me</a>, or you can check out my <a href="work">work experience</a>, <a href="education">education</a> & continued development, <a href="interests">interests</a> or <a href="contact">contact</a> me.</p>
 							</article>
 					</div>
 
