@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animal Noises</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fef6ec;--cream:#fffdf9;--ink:#3b2f2a;--soft:#7a6a60;
+    --peach:#ffb997;--coral:#ff8c6b;--sky:#8ecae6;--grass:#a7d49b;
+    --sun:#ffd479;--lav:#c8b6e2;--line:#efe1d2;--shadow:rgba(120,84,60,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:
+      radial-gradient(circle at 12% 18%, #fff2dd 0, transparent 38%),
+      radial-gradient(circle at 88% 12%, #ffe6e0 0, transparent 36%),
+      radial-gradient(circle at 75% 88%, #e4f3df 0, transparent 40%),
+      var(--bg);color:var(--ink);min-height:100vh;padding:28px 18px 80px;}
+  .wrap{max-width:1080px;margin:0 auto}
+  header.top{text-align:center;margin-bottom:22px}
+  .title{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(2.1rem,6vw,3.4rem);line-height:1;letter-spacing:-.5px}
+  .title .em{display:inline-block;animation:bob 3s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
+  .subtitle{font-size:1.02rem;color:var(--soft);margin-top:8px;font-weight:600}
+
+  .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;margin:22px 0 10px}
+  .search{position:relative;flex:1 1 300px;max-width:420px}
+  .search input{width:100%;border:none;border-radius:18px;padding:15px 18px 15px 48px;font-family:'Nunito';font-size:1rem;font-weight:600;color:var(--ink);background:var(--cream);box-shadow:0 4px 0 var(--line),0 10px 22px var(--shadow);outline:none}
+  .search input::placeholder{color:#bcae9f}
+  .search .ico{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1.15rem;opacity:.6}
+  select{appearance:none;border:none;border-radius:18px;padding:15px 42px 15px 18px;font-family:'Nunito';font-size:1rem;font-weight:700;color:var(--ink);cursor:pointer;background:var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a6a60' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;box-shadow:0 4px 0 var(--line),0 10px 22px var(--shadow);outline:none}
+  .addbtn{border:none;border-radius:18px;padding:15px 22px;cursor:pointer;font-family:'Baloo 2';font-weight:700;font-size:1rem;color:#fff;background:linear-gradient(180deg,var(--coral),#f0764f);box-shadow:0 4px 0 #d9603c,0 10px 22px var(--shadow);transition:transform .12s,box-shadow .12s}
+  .addbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #d9603c,0 6px 14px var(--shadow)}
+
+  .moderow{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:4px 0 6px}
+  .seg{display:inline-flex;background:var(--cream);border-radius:16px;padding:5px;box-shadow:0 3px 0 var(--line),0 8px 18px var(--shadow);gap:4px}
+  .seg button{border:none;background:transparent;font-family:'Baloo 2';font-weight:700;font-size:.92rem;color:var(--soft);padding:9px 16px;border-radius:12px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:6px}
+  .seg button.on{background:linear-gradient(180deg,var(--sun),#f4c25c);color:var(--ink);box-shadow:0 2px 6px var(--shadow)}
+  .seg.view button.on{background:linear-gradient(180deg,var(--sky),#6fb4d6);color:#fff}
+  .seg.list button.on{background:linear-gradient(180deg,var(--lav),#a98fd0);color:#fff}
+
+  .count{text-align:center;color:var(--soft);font-weight:700;font-size:.92rem;margin:8px 0 20px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+
+  /* flip card */
+  .card{perspective:1200px;height:340px;animation:pop .4s cubic-bezier(.2,1.3,.5,1) both;position:relative}
+  @keyframes pop{from{opacity:0;transform:scale(.85) translateY(14px)}to{opacity:1;transform:none}}
+  .inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d;cursor:pointer}
+  .card.flipped .inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--cream);border-radius:24px;padding:20px;box-shadow:0 6px 0 var(--line),0 16px 30px var(--shadow);border:2px solid #fff;overflow:hidden;display:flex;flex-direction:column}
+  .face::before{content:"";position:absolute;inset:0 0 auto 0;height:96px;background:var(--chip,#ffe0cf);opacity:.5;border-radius:24px 24px 60% 60%}
+  .back{transform:rotateY(180deg);background:linear-gradient(160deg,#fffdf9,#fff4ea)}
+  .media{position:relative;height:118px;display:flex;align-items:center;justify-content:center;margin:2px 0 8px}
+  .media .emoji{font-size:4.2rem;line-height:1;filter:drop-shadow(0 6px 6px rgba(0,0,0,.12));transition:transform .25s}
+  .media img{max-height:112px;max-width:90%;object-fit:contain;filter:drop-shadow(0 6px 8px rgba(0,0,0,.15))}
+  .media img.photo{height:112px;width:112px;object-fit:cover;border-radius:50%;border:4px solid #fff;background:#fff}
+  .cat{position:relative;align-self:flex-start;font-family:'Baloo 2';font-weight:700;font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--ink);background:var(--chip,#ffe0cf);padding:3px 10px;border-radius:999px;margin-bottom:6px}
+  .name{position:relative;font-family:'Baloo 2';font-weight:800;font-size:1.45rem;line-height:1.05;margin-bottom:6px}
+  .says{position:relative;font-size:.98rem;font-weight:700;color:var(--coral);font-style:italic}
+  .phon{position:relative;font-size:.92rem;color:var(--soft);font-weight:600;margin-top:2px}
+  .phon b{color:var(--ink)}
+  .action{position:relative;font-size:.83rem;color:var(--soft);font-weight:600;margin-top:8px;display:flex;gap:6px;align-items:flex-start}
+  .fliphint{position:absolute;bottom:12px;right:16px;font-size:.72rem;color:#c3b3a4;font-weight:700;display:flex;align-items:center;gap:4px}
+
+  /* back face content */
+  .back .bname{font-family:'Baloo 2';font-weight:800;font-size:1.2rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .back .bemoji{font-size:1.5rem}
+  .grouprow{background:#fff;border-radius:14px;padding:10px 12px;margin-bottom:10px;box-shadow:0 2px 8px var(--shadow)}
+  .grouprow .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--soft);font-weight:700}
+  .grouprow .val{font-family:'Baloo 2';font-weight:700;font-size:1.05rem;color:var(--ink);margin-top:2px}
+  .fam{display:flex;gap:8px}
+  .famcell{flex:1;background:#fff;border-radius:14px;padding:9px 6px;text-align:center;box-shadow:0 2px 8px var(--shadow)}
+  .famcell .fl{font-size:.66rem;text-transform:uppercase;color:var(--soft);font-weight:700;display:block}
+  .famcell .fv{font-family:'Baloo 2';font-weight:700;font-size:.92rem;color:var(--ink);margin-top:2px;text-transform:capitalize}
+  .famcell .fi{font-size:1.1rem;display:block;margin-bottom:2px}
+
+  .del{position:absolute;top:12px;right:12px;width:28px;height:28px;border:none;border-radius:50%;background:#fff;color:#c9a;cursor:pointer;font-size:1.05rem;font-weight:800;line-height:1;box-shadow:0 2px 6px var(--shadow);opacity:0;transition:opacity .15s,transform .1s;z-index:6;display:flex;align-items:center;justify-content:center}
+  .card:hover .del,.stage .del{opacity:1}
+  .del:hover{background:#ffe6dd;color:#e0604a}
+  .del:active{transform:scale(.88)}
+  /* favourite star */
+  .fav{position:absolute;top:12px;left:12px;width:30px;height:30px;border:none;border-radius:50%;background:#fff;cursor:pointer;font-size:1.05rem;line-height:1;box-shadow:0 2px 6px var(--shadow);opacity:0;transition:opacity .15s,transform .12s;z-index:6;display:flex;align-items:center;justify-content:center;filter:grayscale(1);}
+  .card:hover .fav,.stage .fav{opacity:.85}
+  .fav.on{opacity:1;filter:none;background:linear-gradient(180deg,#fff2cc,#ffe49b);box-shadow:0 2px 8px rgba(220,170,40,.5)}
+  .fav:active{transform:scale(.85)}
+  .card.isfav .face{border-color:#ffd86b;box-shadow:0 6px 0 #f3dca0,0 16px 30px var(--shadow)}
+  .favtag{position:absolute;top:0;right:0;font-size:.7rem;font-weight:800;color:#caa23a;background:#fff6db;padding:2px 8px;border-radius:0 22px 0 12px;z-index:4;display:none}
+  .card.isfav .front .favtag{display:block}
+  /* bring back */
+  .bringback{position:relative;z-index:6;margin-top:6px;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;font-size:.85rem;cursor:pointer;background:linear-gradient(180deg,var(--grass),#8cc47e);color:#fff;box-shadow:0 3px 0 #6fa862}
+  .bringback:active{transform:translateY(2px);box-shadow:0 1px 0 #6fa862}
+  .card.dim .front{filter:saturate(.55) opacity(.92)}
+  .empty{text-align:center;padding:60px 20px;color:var(--soft);font-weight:700;grid-column:1/-1}
+  .empty .big{font-size:3rem;display:block;margin-bottom:10px}
+
+  /* focus / flashcard mode */
+  .focus{display:none;flex-direction:column;align-items:center;gap:18px}
+  .focus.show{display:flex}
+  .stage{position:relative;width:min(420px,92vw);height:480px;touch-action:pan-y}
+  .stage .card{position:absolute;inset:0;height:100%;width:100%;animation:none}
+  .stage .face{padding:28px 26px}
+  .stage .media{height:180px}
+  .stage .media .emoji{font-size:6.5rem}
+  .stage .media img{max-height:180px}
+  .stage .media img.photo{height:170px;width:170px}
+  .stage .name{font-size:2rem}
+  .stage .says{font-size:1.25rem}
+  .stage .phon{font-size:1.1rem}
+  .stage .action{font-size:1rem;margin-top:12px}
+  .stage .back .bname{font-size:1.5rem}
+  .stage .grouprow .val{font-size:1.3rem}
+  .stage .famcell .fv{font-size:1.05rem}
+  .swipehint{color:#c3b3a4;font-weight:700;font-size:.8rem}
+  .focusnav{display:flex;align-items:center;gap:18px}
+  .navbtn{width:62px;height:62px;border:none;border-radius:50%;background:var(--cream);box-shadow:0 4px 0 var(--line),0 10px 20px var(--shadow);font-size:1.6rem;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+  .navbtn:active{transform:translateY(3px)}
+  .progress{font-family:'Baloo 2';font-weight:700;color:var(--soft);min-width:80px;text-align:center}
+
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(60,40,30,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+  .overlay.show{display:flex;animation:fade .2s}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{background:var(--cream);border-radius:26px;padding:24px;width:100%;max-width:440px;box-shadow:0 20px 50px rgba(80,50,30,.4);animation:pop .35s cubic-bezier(.2,1.3,.5,1) both;max-height:92vh;overflow:auto}
+  .modal h2{font-family:'Baloo 2';font-weight:800;font-size:1.5rem;margin-bottom:4px}
+  .modal p.hint{color:var(--soft);font-weight:600;font-size:.9rem;margin-bottom:14px}
+  .field{margin-bottom:12px}
+  .grid2{display:flex;gap:10px}
+  .grid2 .field{flex:1}
+  .field label{display:block;font-family:'Baloo 2';font-weight:700;font-size:.82rem;margin-bottom:4px}
+  .field input,.field select{width:100%;border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-family:'Nunito';font-weight:600;font-size:.92rem;color:var(--ink);background:#fff;outline:none}
+  .field input:focus{border-color:var(--peach)}
+  .field small{color:var(--soft);font-weight:600;font-size:.76rem;display:block;margin-top:3px}
+  .emojipick{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px;max-height:96px;overflow:auto}
+  .emojipick button{font-size:1.4rem;border:2px solid var(--line);background:#fff;border-radius:12px;width:42px;height:42px;cursor:pointer;line-height:1}
+  .emojipick button.sel{border-color:var(--coral);background:#fff2ec}
+  .modal-actions{display:flex;gap:10px;margin-top:14px}
+  .modal-actions button{flex:1;border:none;border-radius:16px;padding:13px;font-family:'Baloo 2';font-weight:700;font-size:1rem;cursor:pointer}
+  .btn-save{background:linear-gradient(180deg,var(--grass),#8cc47e);color:#fff;box-shadow:0 4px 0 #6fa862}
+  .btn-cancel{background:#f3e8db;color:var(--soft)}
+  .btn-save:active{transform:translateY(3px);box-shadow:0 1px 0 #6fa862}
+  footer{text-align:center;margin-top:40px;color:var(--soft);font-weight:600;font-size:.82rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="title">Animal Noises <span class="em">🐾</span></div>
+    <div class="subtitle">What does each animal say? Tap a card to flip it!</div>
+  </header>
+
+  <div class="controls">
+    <div class="search"><span class="ico">🔍</span><input id="search" type="text" placeholder="Search animals or sounds..."></div>
+    <select id="filter"></select>
+    <button class="addbtn" id="addBtn">+ Add animal</button>
+  </div>
+
+  <div class="moderow">
+    <div class="seg" id="modeseg">
+      <button data-m="emoji" class="on">🙂 Emoji</button>
+      <button data-m="cartoon">🎨 Cartoon</button>
+      <button data-m="photo">📷 Photo</button>
+    </div>
+    <div class="seg view" id="viewseg">
+      <button data-v="grid" class="on">▦ Grid</button>
+      <button data-v="focus">🃏 Focus</button>
+    </div>
+  </div>
+
+  <div class="moderow">
+    <div class="seg list" id="listseg">
+      <button data-l="active" class="on">🐾 All</button>
+      <button data-l="fav">⭐ Favourites</button>
+      <button data-l="hidden">🕓 Not now</button>
+    </div>
+  </div>
+
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="focus" id="focusView">
+    <div class="stage" id="stage"></div>
+    <div class="swipehint">👆 Tap to flip · 👈👉 Swipe or use arrows</div>
+    <div class="focusnav">
+      <button class="navbtn" id="prevBtn">‹</button>
+      <div class="progress" id="progress"></div>
+      <button class="navbtn" id="nextBtn">›</button>
+    </div>
+  </div>
+
+  <footer>The quiet ones — hare, rabbit, turtle &amp; fish — mostly use actions instead of sounds. 🤫</footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle">Add a new animal</h2>
+    <p class="hint">Fill in the details and it rebuilds the cards automatically. Front of card shows the sound; flip side shows the group &amp; family names.</p>
+    <div class="field">
+      <label>Pick an emoji</label>
+      <div class="emojipick" id="emojipick"></div>
+      <input id="f_emoji" type="text" placeholder="…or paste any emoji" maxlength="4" style="margin-top:8px">
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Animal name</label><input id="f_name" type="text" placeholder="e.g. Llama"></div>
+      <div class="field"><label>Category</label>
+        <select id="f_cat">
+          <option>Mammal</option><option>Mammal (sea)</option><option>Bird</option><option>Fish</option>
+          <option>Reptile</option><option>Amphibian</option><option>Insect</option><option>Sea creature</option><option>Mollusc</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Says…</label><input id="f_says" type="text" placeholder="e.g. Hums"></div>
+      <div class="field"><label>Phonetically…</label><input id="f_phon" type="text" placeholder="e.g. mwa / hum"></div>
+    </div>
+    <div class="field"><label>Action (optional)</label><input id="f_action" type="text" placeholder="e.g. Sway neck, spit"></div>
+    <div class="field"><label>A group is called… (optional)</label><input id="f_group" type="text" placeholder="e.g. a herd"></div>
+    <div class="grid2">
+      <div class="field"><label>Male</label><input id="f_male" type="text" placeholder="e.g. male"></div>
+      <div class="field"><label>Female</label><input id="f_female" type="text" placeholder="e.g. female"></div>
+      <div class="field"><label>Baby</label><input id="f_baby" type="text" placeholder="e.g. cria"></div>
+    </div>
+    <div class="field"><label>Image keyword (optional)</label><input id="f_img" type="text" placeholder="e.g. llama"><small>Used to fetch the cartoon &amp; photo. Defaults to the animal name.</small></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelBtn">Cancel</button>
+      <button class="btn-save" id="saveBtn">Save animal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEFAULTS=[{"name": "Cat", "emoji": "🐱", "cat": "Mammal", "says": "Meows", "phon": "meow / mee-ow (purr: rrrrr)", "action": "Rub against legs, arch back", "img": "cat", "group": "a clowder", "male": "tom", "female": "queen", "baby": "kitten"}, {"name": "Dog", "emoji": "🐶", "cat": "Mammal", "says": "Woofs", "phon": "woof / bow-wow / arf", "action": "Wag tail, pant, jump up", "img": "dog", "group": "a pack", "male": "dog", "female": "bitch", "baby": "puppy"}, {"name": "Cow", "emoji": "🐮", "cat": "Mammal", "says": "Moos", "phon": "moo / mooo", "action": "Slow head sway, chew", "img": "cattle", "group": "a herd", "male": "bull", "female": "cow", "baby": "calf"}, {"name": "Horse", "emoji": "🐴", "cat": "Mammal", "says": "Neighs", "phon": "neigh / whinny hee-hee-hee", "action": "Gallop, paw ground, toss head", "img": "horse", "group": "a herd", "male": "stallion", "female": "mare", "baby": "foal"}, {"name": "Pig", "emoji": "🐷", "cat": "Mammal", "says": "Oinks", "phon": "oink / snort", "action": "Snuffle ground, wiggle", "img": "pig", "group": "a drift", "male": "boar", "female": "sow", "baby": "piglet"}, {"name": "Sheep", "emoji": "🐑", "cat": "Mammal", "says": "Baas", "phon": "baa / baaa", "action": "Gentle bouncing, huddle", "img": "sheep", "group": "a flock", "male": "ram", "female": "ewe", "baby": "lamb"}, {"name": "Goat", "emoji": "🐐", "cat": "Mammal", "says": "Bleats", "phon": "maa / naa", "action": "Headbutt, hop", "img": "goat", "group": "a herd (or tribe)", "male": "billy", "female": "nanny", "baby": "kid"}, {"name": "Donkey", "emoji": "🫏", "cat": "Mammal", "says": "Brays", "phon": "ee-aw / hee-haw", "action": "Big nod, kick, flick ears", "img": "donkey", "group": "a drove", "male": "jack", "female": "jenny", "baby": "foal"}, {"name": "Rabbit", "emoji": "🐰", "cat": "Mammal", "says": "Mostly quiet", "phon": "soft purr/click; eee scream if scared", "action": "Thump feet, hop, twitch nose", "img": "rabbit", "group": "a colony", "male": "buck", "female": "doe", "baby": "kit"}, {"name": "Hare", "emoji": "🐇", "cat": "Mammal", "says": "Mostly silent", "phon": "eee scream if scared; soft grunts", "action": "Thump feet, big leaps", "img": "hare", "group": "a drove", "male": "jack", "female": "jill", "baby": "leveret"}, {"name": "Mouse", "emoji": "🐭", "cat": "Mammal", "says": "Squeaks", "phon": "squeak / eek", "action": "Tiny scurrying steps, nibble", "img": "mouse", "group": "a mischief", "male": "buck", "female": "doe", "baby": "pinkie"}, {"name": "Hamster", "emoji": "🐹", "cat": "Mammal", "says": "Squeaks", "phon": "squeak / chirp", "action": "Stuff cheeks, scurry", "img": "hamster", "group": "a horde", "male": "buck", "female": "doe", "baby": "pup"}, {"name": "Lion", "emoji": "🦁", "cat": "Mammal", "says": "Roars", "phon": "roar / rrroar", "action": "Big stretch, paw swipe, prowl", "img": "lion", "group": "a pride", "male": "lion", "female": "lioness", "baby": "cub"}, {"name": "Tiger", "emoji": "🐯", "cat": "Mammal", "says": "Roars", "phon": "roar / grr", "action": "Prowl, big paw swipe", "img": "tiger", "group": "an ambush", "male": "tiger", "female": "tigress", "baby": "cub"}, {"name": "Bear", "emoji": "🐻", "cat": "Mammal", "says": "Growls", "phon": "grrr / roar", "action": "Stand tall, lumber", "img": "bear", "group": "a sleuth", "male": "boar", "female": "sow", "baby": "cub"}, {"name": "Panda", "emoji": "🐼", "cat": "Mammal", "says": "Bleats", "phon": "bleat / honk", "action": "Roll, munch bamboo", "img": "giant panda", "group": "an embarrassment", "male": "boar", "female": "sow", "baby": "cub"}, {"name": "Monkey", "emoji": "🐵", "cat": "Mammal", "says": "Hoots", "phon": "ooh-ooh-aah-aah", "action": "Scratch, swing arms, hop", "img": "monkey", "group": "a troop", "male": "male", "female": "female", "baby": "infant"}, {"name": "Elephant", "emoji": "🐘", "cat": "Mammal", "says": "Trumpets", "phon": "pawoo", "action": "Swing arm as trunk, stomp", "img": "elephant", "group": "a herd", "male": "bull", "female": "cow", "baby": "calf"}, {"name": "Giraffe", "emoji": "🦒", "cat": "Mammal", "says": "Hums", "phon": "hum / low moo", "action": "Reach up high, sway neck", "img": "giraffe", "group": "a tower", "male": "bull", "female": "cow", "baby": "calf"}, {"name": "Zebra", "emoji": "🦓", "cat": "Mammal", "says": "Barks", "phon": "kwa-ha-ha; high ee-aw; snorts", "action": "Trot, kick, toss head", "img": "zebra", "group": "a dazzle", "male": "stallion", "female": "mare", "baby": "foal"}, {"name": "Wolf", "emoji": "🐺", "cat": "Mammal", "says": "Howls", "phon": "awooo", "action": "Head back to howl, prowl", "img": "wolf", "group": "a pack", "male": "dog", "female": "bitch", "baby": "pup"}, {"name": "Fox", "emoji": "🦊", "cat": "Mammal", "says": "Yips", "phon": "ring-ding / yip", "action": "Pounce, bushy-tail swish", "img": "fox", "group": "a skulk", "male": "dog (tod)", "female": "vixen", "baby": "kit"}, {"name": "Deer", "emoji": "🦌", "cat": "Mammal", "says": "Bleats", "phon": "grunt / bleat", "action": "Leap, freeze, twitch ears", "img": "deer", "group": "a herd", "male": "buck (stag)", "female": "doe", "baby": "fawn"}, {"name": "Cheetah", "emoji": "🐆", "cat": "Mammal", "says": "Chirps", "phon": "chirp / purr", "action": "Crouch, sprint", "img": "cheetah", "group": "a coalition", "male": "male", "female": "female", "baby": "cub"}, {"name": "Koala", "emoji": "🐨", "cat": "Mammal", "says": "Bellows", "phon": "grunt / bellow", "action": "Cling and climb, munch", "img": "koala", "group": "a colony", "male": "buck", "female": "doe", "baby": "joey"}, {"name": "Kangaroo", "emoji": "🦘", "cat": "Mammal", "says": "Chortles", "phon": "cluck / chortle", "action": "Big two-foot hops", "img": "kangaroo", "group": "a mob", "male": "boomer", "female": "flyer", "baby": "joey"}, {"name": "Squirrel", "emoji": "🐿️", "cat": "Mammal", "says": "Chatters", "phon": "chuk-chuk / chatter", "action": "Scamper, bury nut, flick tail", "img": "squirrel", "group": "a scurry", "male": "buck", "female": "doe", "baby": "kit"}, {"name": "Hedgehog", "emoji": "🦔", "cat": "Mammal", "says": "Snuffles", "phon": "snuffle / huff", "action": "Curl into a ball, snuffle", "img": "hedgehog", "group": "an array", "male": "boar", "female": "sow", "baby": "hoglet"}, {"name": "Bat", "emoji": "🦇", "cat": "Mammal", "says": "Squeaks", "phon": "screech / squeak", "action": "Flap, hang upside down", "img": "bat", "group": "a colony", "male": "male", "female": "female", "baby": "pup"}, {"name": "Whale", "emoji": "🐳", "cat": "Mammal (sea)", "says": "Sings", "phon": "wooooo / long low mmmooo", "action": "Slow arm waves, big spout", "img": "whale", "group": "a pod", "male": "bull", "female": "cow", "baby": "calf"}, {"name": "Dolphin", "emoji": "🐬", "cat": "Mammal (sea)", "says": "Clicks", "phon": "ee-ee-ee (clicks & whistles)", "action": "Leap, dive, nod head", "img": "dolphin", "group": "a pod", "male": "bull", "female": "cow", "baby": "calf"}, {"name": "Seal", "emoji": "🦭", "cat": "Mammal (sea)", "says": "Barks", "phon": "ark-ark / ow-ow", "action": "Clap flippers, belly shuffle", "img": "seal", "group": "a colony", "male": "bull", "female": "cow", "baby": "pup"}, {"name": "Otter", "emoji": "🦦", "cat": "Mammal (sea)", "says": "Squeaks", "phon": "squeak / chirp", "action": "Float on back, paddle", "img": "otter", "group": "a raft", "male": "dog", "female": "bitch", "baby": "pup"}, {"name": "Chicken", "emoji": "🐔", "cat": "Bird", "says": "Clucks", "phon": "cluck-cluck / bok-bok", "action": "Peck ground, flap elbows", "img": "chicken", "group": "a flock", "male": "rooster", "female": "hen", "baby": "chick"}, {"name": "Rooster", "emoji": "🐓", "cat": "Bird", "says": "Crows", "phon": "cock-a-doodle-doo", "action": "Strut, flap, crow", "img": "rooster", "group": "a flock", "male": "rooster", "female": "hen", "baby": "chick"}, {"name": "Duck", "emoji": "🦆", "cat": "Bird", "says": "Quacks", "phon": "quack-quack", "action": "Waddle, flap, dabble", "img": "duck", "group": "a raft (paddling)", "male": "drake", "female": "duck (hen)", "baby": "duckling"}, {"name": "Goose", "emoji": "🦢", "cat": "Bird", "says": "Honks", "phon": "honk / hiss", "action": "Waddle, flap, stretch neck", "img": "goose", "group": "a gaggle", "male": "gander", "female": "goose", "baby": "gosling"}, {"name": "Swan", "emoji": "🦢", "cat": "Bird", "says": "Trumpets", "phon": "trumpet / hiss", "action": "Glide, arch neck", "img": "swan", "group": "a bevy", "male": "cob", "female": "pen", "baby": "cygnet"}, {"name": "Turkey", "emoji": "🦃", "cat": "Bird", "says": "Gobbles", "phon": "gobble-gobble", "action": "Fan tail, strut", "img": "turkey", "group": "a rafter", "male": "tom", "female": "hen", "baby": "poult"}, {"name": "Owl", "emoji": "🦉", "cat": "Bird", "says": "Hoots", "phon": "hoo-hoo / twit-twoo", "action": "Big eyes, slow head turn", "img": "owl", "group": "a parliament", "male": "male", "female": "female", "baby": "owlet"}, {"name": "Eagle", "emoji": "🦅", "cat": "Bird", "says": "Screeches", "phon": "screech / kee-kee", "action": "Spread wings, soar", "img": "eagle", "group": "a convocation", "male": "male", "female": "female", "baby": "eaglet"}, {"name": "Penguin", "emoji": "🐧", "cat": "Bird", "says": "Brays", "phon": "squawk / bray", "action": "Waddle, slide on belly", "img": "penguin", "group": "a colony (waddle)", "male": "male", "female": "female", "baby": "chick"}, {"name": "Parrot", "emoji": "🦜", "cat": "Bird", "says": "Squawks", "phon": "squawk / hello!", "action": "Bob head, flap", "img": "parrot", "group": "a pandemonium", "male": "cock", "female": "hen", "baby": "chick"}, {"name": "Peacock", "emoji": "🦚", "cat": "Bird", "says": "Screams", "phon": "may-aw / scream", "action": "Fan tail feathers, strut", "img": "peafowl", "group": "an ostentation", "male": "peacock", "female": "peahen", "baby": "peachick"}, {"name": "Flamingo", "emoji": "🦩", "cat": "Bird", "says": "Honks", "phon": "honk / grunt", "action": "Stand on one leg, sway", "img": "flamingo", "group": "a flamboyance", "male": "male", "female": "female", "baby": "chick"}, {"name": "Dove", "emoji": "🕊️", "cat": "Bird", "says": "Coos", "phon": "coo-coo", "action": "Gentle bob, flutter", "img": "dove", "group": "a dule", "male": "cock", "female": "hen", "baby": "squab"}, {"name": "Crow", "emoji": "🐦‍⬛", "cat": "Bird", "says": "Caws", "phon": "caw-caw", "action": "Hop, peck, flap", "img": "crow", "group": "a murder", "male": "male", "female": "female", "baby": "chick"}, {"name": "Frog", "emoji": "🐸", "cat": "Amphibian", "says": "Croaks", "phon": "ribbit / croak", "action": "Squat and big hop", "img": "frog", "group": "an army", "male": "male", "female": "female", "baby": "tadpole"}, {"name": "Turtle", "emoji": "🐢", "cat": "Reptile", "says": "Mostly silent", "phon": "soft hiss / low grunt hmph", "action": "Slow crawl, tuck head in", "img": "turtle", "group": "a bale", "male": "male", "female": "female", "baby": "hatchling"}, {"name": "Snake", "emoji": "🐍", "cat": "Reptile", "says": "Hisses", "phon": "ssss / hiss", "action": "Slither, flick tongue", "img": "snake", "group": "a nest", "male": "male", "female": "female", "baby": "snakelet"}, {"name": "Crocodile", "emoji": "🐊", "cat": "Reptile", "says": "Hisses", "phon": "hiss / bellow", "action": "Snap, low crawl", "img": "crocodile", "group": "a bask", "male": "bull", "female": "cow", "baby": "hatchling"}, {"name": "Lizard", "emoji": "🦎", "cat": "Reptile", "says": "Mostly silent", "phon": "soft chirp / hiss", "action": "Quick darts, push-ups", "img": "lizard", "group": "a lounge", "male": "male", "female": "female", "baby": "hatchling"}, {"name": "Fish", "emoji": "🐟", "cat": "Fish", "says": "Blubs", "phon": "blub-blub / glub", "action": "Pucker lips, wave fins", "img": "goldfish", "group": "a school", "male": "male", "female": "female", "baby": "fry"}, {"name": "Shark", "emoji": "🦈", "cat": "Fish", "says": "Silent", "phon": "whoosh (silent hunter)", "action": "Glide, circle, big chomp", "img": "shark", "group": "a shiver", "male": "male", "female": "female", "baby": "pup"}, {"name": "Octopus", "emoji": "🐙", "cat": "Sea creature", "says": "Silent", "phon": "glug (silent)", "action": "Wiggle eight arms", "img": "octopus", "group": "a consortium", "male": "male", "female": "female", "baby": "larva"}, {"name": "Crab", "emoji": "🦀", "cat": "Sea creature", "says": "Silent", "phon": "click / bubble", "action": "Scuttle sideways, pinch", "img": "crab", "group": "a cast", "male": "male", "female": "female", "baby": "zoea"}, {"name": "Bee", "emoji": "🐝", "cat": "Insect", "says": "Buzzes", "phon": "bzzzz", "action": "Flit, flap fast, buzz", "img": "bee", "group": "a swarm", "male": "drone", "female": "queen", "baby": "larva"}, {"name": "Butterfly", "emoji": "🦋", "cat": "Insect", "says": "Silent", "phon": "flutter (silent)", "action": "Float, flap gently", "img": "butterfly", "group": "a kaleidoscope", "male": "male", "female": "female", "baby": "caterpillar"}, {"name": "Ant", "emoji": "🐜", "cat": "Insect", "says": "Silent", "phon": "tiny tap (silent)", "action": "March in a line", "img": "ant", "group": "a colony (army)", "male": "drone", "female": "queen", "baby": "larva"}, {"name": "Ladybug", "emoji": "🐞", "cat": "Insect", "says": "Silent", "phon": "tiny buzz", "action": "Crawl, open wings, fly", "img": "ladybird", "group": "a loveliness", "male": "male", "female": "female", "baby": "larva"}, {"name": "Cricket", "emoji": "🦗", "cat": "Insect", "says": "Chirps", "phon": "chirp-chirp", "action": "Rub legs, hop", "img": "cricket", "group": "an orchestra", "male": "male", "female": "female", "baby": "nymph"}, {"name": "Snail", "emoji": "🐌", "cat": "Mollusc", "says": "Silent", "phon": "slurp (silent)", "action": "Slow glide, peek antennae", "img": "snail", "group": "a rout", "male": "male", "female": "female", "baby": "hatchling"}];
+const CHIP={"Mammal":"#ffe0cf","Mammal (sea)":"#cfe9f5","Bird":"#fff0c2","Fish":"#cfe9f5","Reptile":"#d8f0cf","Amphibian":"#d8f0cf","Insect":"#ece0f5","Sea creature":"#cfe9f5","Mollusc":"#e8ded2","Other":"#eee3d6"};
+const PICK_EMOJI=["🐶","🐱","🐮","🐴","🐷","🐑","🐐","🫏","🦁","🐯","🐻","🐼","🐵","🐘","🦒","🦓","🐺","🦊","🦌","🐆","🐨","🦘","🐿️","🦔","🦇","🐳","🐬","🦭","🦦","🐭","🐹","🐰","🐇","🐔","🐓","🦆","🦢","🦃","🦉","🦅","🐧","🦜","🦚","🦩","🕊️","🐸","🐢","🐍","🐊","🦎","🐟","🦈","🐙","🦀","🐝","🦋","🐜","🐞","🦗","🐌","🐦","🐾"];
+
+const OPENMOJI={"🐶":"1F436","🐱":"1F431","🐮":"1F42E","🐴":"1F434","🐷":"1F437","🐑":"1F411","🐐":"1F410","🫏":"1FACF","🦁":"1F981","🐯":"1F42F","🐻":"1F43B","🐼":"1F43C","🐵":"1F435","🐘":"1F418","🦒":"1F992","🦓":"1F993","🐺":"1F43A","🦊":"1F98A","🦌":"1F98C","🐆":"1F406","🐨":"1F428","🦘":"1F998","🐿️":"1F43F","🦔":"1F994","🦇":"1F987","🐳":"1F433","🐬":"1F42C","🦭":"1F9AD","🦦":"1F9A6","🐭":"1F42D","🐹":"1F439","🐰":"1F430","🐇":"1F407","🐔":"1F414","🐓":"1F413","🦆":"1F986","🦢":"1F9A2","🦃":"1F983","🦉":"1F989","🦅":"1F985","🐧":"1F427","🦜":"1F99C","🦚":"1F99A","🦩":"1F9A9","🕊️":"1F54A","🐸":"1F438","🐢":"1F422","🐍":"1F40D","🐊":"1F40A","🦎":"1F98E","🐟":"1F41F","🦈":"1F988","🐙":"1F419","🦀":"1F980","🐝":"1F41D","🦋":"1F98B","🐜":"1F41C","🐞":"1F41E","🦗":"1F997","🐌":"1F40C","🐦":"1F426"};
+function cartoonURL(a){const code=OPENMOJI[a.emoji]||"1F43E";return `https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@14.0.0/color/svg/${code}.svg`;}
+const photoCache={};
+function fetchPhoto(kw,imgEl,emoji){
+  const key=kw.toLowerCase();
+  const apply=url=>{if(!imgEl.isConnected)return;if(url){imgEl.src=url;}else{imgEl.outerHTML=`<span class="emoji">${emoji}</span>`;}};
+  if(photoCache[key]!==undefined){apply(photoCache[key]);return;}
+  const title=encodeURIComponent(kw.replace(/\b\w/g,c=>c.toUpperCase()));
+  fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`)
+    .then(r=>r.ok?r.json():Promise.reject())
+    .then(d=>{const u=(d.thumbnail&&d.thumbnail.source)||null;photoCache[key]=u;apply(u);})
+    .catch(()=>{photoCache[key]=null;apply(null);});
+}
+
+let animals=[], mode="emoji", viewMode="grid", focusIdx=0, curList=[], listMode="active";
+const KEY="animal-sounds:list:v4", MKEY="animal-sounds:mode", VKEY="animal-sounds:view";
+
+async function load(){
+  try{const r=await window.storage.get(KEY);animals=r&&r.value?JSON.parse(r.value):DEFAULTS.slice();}catch(e){animals=DEFAULTS.slice();}
+  try{const m=await window.storage.get(MKEY);if(m&&m.value)mode=m.value;}catch(e){}
+  try{const v=await window.storage.get(VKEY);if(v&&v.value)viewMode=v.value;}catch(e){}
+  document.querySelectorAll('#modeseg button').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));
+  document.querySelectorAll('#viewseg button').forEach(b=>b.classList.toggle('on',b.dataset.v===viewMode));
+  buildFilter();applyView();
+}
+async function save(){try{await window.storage.set(KEY,JSON.stringify(animals));}catch(e){}}
+async function saveMode(){try{await window.storage.set(MKEY,mode);}catch(e){}}
+async function saveView(){try{await window.storage.set(VKEY,viewMode);}catch(e){}}
+
+const grid=document.getElementById('grid'),filterSel=document.getElementById('filter'),
+      searchEl=document.getElementById('search'),countEl=document.getElementById('count'),
+      focusView=document.getElementById('focusView'),stage=document.getElementById('stage'),
+      progress=document.getElementById('progress');
+
+function buildFilter(){
+  const cats=[...new Set(animals.map(a=>a.cat))].sort();
+  const cur=filterSel.value||"All";
+  filterSel.innerHTML='<option value="All">All animals</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  filterSel.value=[...filterSel.options].some(o=>o.value===cur)?cur:"All";
+}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function getList(){
+  const q=searchEl.value.trim().toLowerCase(),f=filterSel.value;
+  return animals.map((a,i)=>({a,i}))
+    .filter(({a})=>{
+      if(listMode==="hidden")return a.hidden;
+      if(a.hidden)return false;
+      if(listMode==="fav"&&!a.fav)return false;
+      return true;
+    })
+    .filter(({a})=>(f==="All"||a.cat===f)&&(!q||a.name.toLowerCase().includes(q)||(a.says||'').toLowerCase().includes(q)||(a.phon||'').toLowerCase().includes(q)))
+    .sort((x,y)=>{
+      if(listMode==="active"){const fd=(y.a.fav?1:0)-(x.a.fav?1:0);if(fd)return fd;}
+      return x.a.name.localeCompare(y.a.name);
+    });
+}
+function mediaHTML(a,idx){
+  const emoji=`<span class="emoji">${a.emoji||"🐾"}</span>`;
+  if(mode==="emoji")return emoji;
+  if(mode==="cartoon")return `<img src="${cartoonURL(a)}" alt="${esc(a.name)}" onerror="this.onerror=null;this.outerHTML='<span class=\\'emoji\\'>${a.emoji||"🐾"}</span>'">`;
+  return `<img class="photo" data-photo="${idx}" alt="${esc(a.name)}">`;
+}
+function frontFace(a){
+  return `<div class="face front">
+    <span class="favtag">⭐ Favourite</span>
+    <div class="media">${mediaHTML(a,a.__i)}</div>
+    <span class="cat">${esc(a.cat)}</span>
+    <div class="name">${esc(a.name)}</div>
+    <div class="says">${esc(a.says||'')}…</div>
+    <div class="phon">Phonetically it's <b>${esc(a.phon||'')}</b></div>
+    ${a.action?`<div class="action"><span>🎭</span><span>${esc(a.action)}</span></div>`:''}
+    <div class="fliphint">flip 🔄</div>
+  </div>`;
+}
+function backFace(a){
+  const fam=[["♂ Male",a.male,"💙"],["♀ Female",a.female,"💗"],["Baby",a.baby,"🍼"]]
+    .filter(f=>f[1]).map(f=>`<div class="famcell"><span class="fi">${f[2]}</span><span class="fl">${f[0]}</span><span class="fv">${esc(f[1])}</span></div>`).join('');
+  return `<div class="face back">
+    <div class="bname"><span class="bemoji">${a.emoji||"🐾"}</span>${esc(a.name)}</div>
+    ${a.group?`<div class="grouprow"><span class="lbl">A group is called</span><div class="val">${esc(a.group)}</div></div>`:''}
+    ${fam?`<div class="fam">${fam}</div>`:''}
+    ${!a.group&&!fam?`<div class="grouprow"><span class="lbl">More info</span><div class="val">Coming soon!</div></div>`:''}
+    <div class="fliphint">flip back 🔄</div>
+  </div>`;
+}
+function cardHTML(a,i,n){
+  const chip=CHIP[a.cat]||"#eee3d6";
+  a.__i=i;
+  const inHidden=listMode==="hidden";
+  const cls=`card${a.fav?' isfav':''}${a.hidden&&!inHidden?' dim':''}`;
+  const star=`<button class="fav${a.fav?' on':''}" data-fav="${i}" title="${a.fav?'Unfavourite':'Mark as favourite'}">${a.fav?'⭐':'☆'}</button>`;
+  const topBtn=inHidden
+    ? `<button class="del" data-del="${i}" title="Delete permanently">🗑️</button>`
+    : `<button class="del" data-hide="${i}" title="Move to Not now">×</button>`;
+  const bring=inHidden?`<button class="bringback" data-bring="${i}">↩︎ Bring back</button>`:'';
+  return `<div class="${cls}" data-idx="${i}" style="--chip:${chip};${n!=null?`animation-delay:${n*0.03}s`:''}">
+    ${star}${topBtn}
+    <div class="inner">${frontFace(a)}${backFace(a)}</div>
+    ${bring}
+  </div>`;
+}
+
+function wireCard(c){
+  c.querySelector('.inner').onclick=()=>c.classList.toggle('flipped');
+  const fav=c.querySelector('.fav');
+  if(fav)fav.onclick=e=>{e.stopPropagation();const i=+fav.dataset.fav;animals[i].fav=!animals[i].fav;save();applyView();};
+  const hide=c.querySelector('[data-hide]');
+  if(hide)hide.onclick=e=>{e.stopPropagation();const i=+hide.dataset.hide;animals[i].hidden=true;save();applyView();};
+  const bring=c.querySelector('[data-bring]');
+  if(bring)bring.onclick=e=>{e.stopPropagation();const i=+bring.dataset.bring;animals[i].hidden=false;save();applyView();};
+  const del=c.querySelector('[data-del]');
+  if(del)del.onclick=e=>{e.stopPropagation();const i=+del.dataset.del;if(confirm(`Permanently delete ${animals[i].name}? This can't be undone.`)){animals.splice(i,1);save();buildFilter();applyView();}};
+}
+
+function loadPhotos(root){
+  if(mode!=="photo")return;
+  root.querySelectorAll('img[data-photo]').forEach(img=>{
+    const a=animals[+img.dataset.photo];if(a)fetchPhoto(a.img||a.name,img,a.emoji||"🐾");
+  });
+}
+
+function applyView(){
+  if(viewMode==="focus"){focusView.classList.add('show');grid.style.display='none';renderFocus();}
+  else{focusView.classList.remove('show');grid.style.display='grid';renderGrid();}
+}
+
+function emptyMsg(){
+  if(listMode==="fav")return `<div class="empty"><span class="big">⭐</span>No favourites yet. Tap the star on an animal to add it here!</div>`;
+  if(listMode==="hidden")return `<div class="empty"><span class="big">🕓</span>Nothing in "Not now". Tap × on a card to tuck it away here.</div>`;
+  return `<div class="empty"><span class="big">🐾</span>No animals found. Try a different search or add one!</div>`;
+}
+function renderGrid(){
+  curList=getList();
+  countEl.textContent=`${curList.length} animal${curList.length!==1?'s':''}${listMode==="fav"?' · favourites':listMode==="hidden"?' · not now':''}`;
+  if(!curList.length){grid.innerHTML=emptyMsg();return;}
+  grid.innerHTML=curList.map(({a,i},n)=>cardHTML(a,i,n)).join('');
+  grid.querySelectorAll('.card').forEach(wireCard);
+  loadPhotos(grid);
+}
+
+function renderFocus(){
+  curList=getList();
+  if(!curList.length){stage.innerHTML=emptyMsg();progress.textContent='';countEl.textContent='';return;}
+  if(focusIdx>=curList.length)focusIdx=0;
+  if(focusIdx<0)focusIdx=curList.length-1;
+  const {a,i}=curList[focusIdx];
+  countEl.textContent=`${curList.length} animal${curList.length!==1?'s':''}${listMode==="fav"?' · favourites':listMode==="hidden"?' · not now':''}`;
+  stage.innerHTML=cardHTML(a,i,null);
+  wireCard(stage.querySelector('.card'));
+  progress.textContent=`${focusIdx+1} / ${curList.length}`;
+  loadPhotos(stage);
+}
+
+function step(d){focusIdx+=d;renderFocus();}
+document.getElementById('prevBtn').onclick=()=>step(-1);
+document.getElementById('nextBtn').onclick=()=>step(1);
+document.addEventListener('keydown',e=>{if(!focusView.classList.contains('show'))return;if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);if(e.key===' '){e.preventDefault();const c=stage.querySelector('.card');if(c)c.classList.toggle('flipped');}});
+
+// swipe
+let sx=0,sy=0,swiping=false;
+stage.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;swiping=true;},{passive:true});
+stage.addEventListener('touchend',e=>{if(!swiping)return;swiping=false;const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){step(dx<0?1:-1);}});
+
+searchEl.oninput=()=>{focusIdx=0;applyView();};
+filterSel.onchange=()=>{focusIdx=0;applyView();};
+document.querySelectorAll('#modeseg button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;saveMode();document.querySelectorAll('#modeseg button').forEach(x=>x.classList.toggle('on',x===b));applyView();});
+document.querySelectorAll('#viewseg button').forEach(b=>b.onclick=()=>{viewMode=b.dataset.v;saveView();document.querySelectorAll('#viewseg button').forEach(x=>x.classList.toggle('on',x===b));focusIdx=0;applyView();});
+document.querySelectorAll('#listseg button').forEach(b=>b.onclick=()=>{listMode=b.dataset.l;document.querySelectorAll('#listseg button').forEach(x=>x.classList.toggle('on',x===b));focusIdx=0;applyView();});
+
+// modal
+const overlay=document.getElementById('overlay'),pickEl=document.getElementById('emojipick');
+let chosenEmoji="🐾";
+pickEl.innerHTML=[...new Set(PICK_EMOJI)].map(e=>`<button data-e="${e}">${e}</button>`).join('');
+pickEl.querySelectorAll('button').forEach(b=>b.onclick=()=>{chosenEmoji=b.dataset.e;document.getElementById('f_emoji').value="";pickEl.querySelectorAll('button').forEach(x=>x.classList.toggle('sel',x===b));});
+document.getElementById('f_emoji').oninput=e=>{if(e.target.value){chosenEmoji=e.target.value;pickEl.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));}};
+function openModal(){['f_name','f_says','f_phon','f_action','f_emoji','f_img','f_group','f_male','f_female','f_baby'].forEach(id=>document.getElementById(id).value='');document.getElementById('f_cat').value='Mammal';chosenEmoji="🐾";pickEl.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));overlay.classList.add('show');document.getElementById('f_name').focus();}
+function closeModal(){overlay.classList.remove('show');}
+document.getElementById('addBtn').onclick=openModal;
+document.getElementById('cancelBtn').onclick=closeModal;
+overlay.onclick=e=>{if(e.target===overlay)closeModal();};
+document.getElementById('saveBtn').onclick=()=>{
+  const name=document.getElementById('f_name').value.trim();
+  if(!name){alert('Please enter an animal name.');return;}
+  const g=id=>document.getElementById(id).value.trim();
+  animals.push({name,emoji:chosenEmoji||"🐾",cat:g('f_cat'),says:g('f_says')||"Says",phon:g('f_phon'),action:g('f_action'),img:(g('f_img')||name).toLowerCase(),group:g('f_group'),male:g('f_male'),female:g('f_female'),baby:g('f_baby')});
+  save();buildFilter();searchEl.value='';filterSel.value='All';focusIdx=animals.length-1;
+  if(viewMode==="focus"){const nl=getList();focusIdx=nl.findIndex(x=>x.a.name===name);if(focusIdx<0)focusIdx=0;}
+  applyView();closeModal();
+};
+
+load();
+</script>
+</body>
+</html>
