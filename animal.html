@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animal Sounds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fef6ec;--cream:#fffdf9;--ink:#3b2f2a;--soft:#7a6a60;
+    --peach:#ffb997;--coral:#ff8c6b;--sky:#8ecae6;--grass:#a7d49b;
+    --sun:#ffd479;--lav:#c8b6e2;--line:#efe1d2;--shadow:rgba(120,84,60,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Nunito',sans-serif;
+    background:
+      radial-gradient(circle at 12% 18%, #fff2dd 0, transparent 38%),
+      radial-gradient(circle at 88% 12%, #ffe6e0 0, transparent 36%),
+      radial-gradient(circle at 75% 88%, #e4f3df 0, transparent 40%),
+      var(--bg);
+    color:var(--ink);min-height:100vh;padding:28px 18px 80px;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+  header.top{text-align:center;margin-bottom:22px}
+  .title{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(2.1rem,6vw,3.4rem);line-height:1;letter-spacing:-.5px}
+  .title .em{display:inline-block;animation:bob 3s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
+  .subtitle{font-size:1.02rem;color:var(--soft);margin-top:8px;font-weight:600}
+
+  .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;margin:22px 0 10px}
+  .search{position:relative;flex:1 1 300px;max-width:420px}
+  .search input{width:100%;border:none;border-radius:18px;padding:15px 18px 15px 48px;font-family:'Nunito';font-size:1rem;font-weight:600;color:var(--ink);background:var(--cream);box-shadow:0 4px 0 var(--line),0 10px 22px var(--shadow);outline:none}
+  .search input::placeholder{color:#bcae9f}
+  .search .ico{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1.15rem;opacity:.6}
+  select{appearance:none;border:none;border-radius:18px;padding:15px 42px 15px 18px;font-family:'Nunito';font-size:1rem;font-weight:700;color:var(--ink);cursor:pointer;background:var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a6a60' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;box-shadow:0 4px 0 var(--line),0 10px 22px var(--shadow);outline:none}
+  .addbtn{border:none;border-radius:18px;padding:15px 22px;cursor:pointer;font-family:'Baloo 2';font-weight:700;font-size:1rem;color:#fff;background:linear-gradient(180deg,var(--coral),#f0764f);box-shadow:0 4px 0 #d9603c,0 10px 22px var(--shadow);transition:transform .12s,box-shadow .12s}
+  .addbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #d9603c,0 6px 14px var(--shadow)}
+
+  .moderow{display:flex;justify-content:center;margin:4px 0 6px}
+  .seg{display:inline-flex;background:var(--cream);border-radius:16px;padding:5px;box-shadow:0 3px 0 var(--line),0 8px 18px var(--shadow);gap:4px}
+  .seg button{border:none;background:transparent;font-family:'Baloo 2';font-weight:700;font-size:.92rem;color:var(--soft);padding:9px 18px;border-radius:12px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:6px}
+  .seg button.on{background:linear-gradient(180deg,var(--sun),#f4c25c);color:var(--ink);box-shadow:0 2px 6px var(--shadow)}
+
+  .count{text-align:center;color:var(--soft);font-weight:700;font-size:.92rem;margin:8px 0 20px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+  .card{background:var(--cream);border-radius:24px;padding:22px 20px 20px;position:relative;box-shadow:0 6px 0 var(--line),0 16px 30px var(--shadow);border:2px solid #fff;overflow:hidden;animation:pop .4s cubic-bezier(.2,1.3,.5,1) both}
+  @keyframes pop{from{opacity:0;transform:scale(.85) translateY(14px)}to{opacity:1;transform:none}}
+  .card::before{content:"";position:absolute;inset:0 0 auto 0;height:96px;background:var(--chip,#ffe0cf);opacity:.5;border-radius:24px 24px 60% 60%}
+  .media{position:relative;height:120px;display:flex;align-items:center;justify-content:center;margin:2px 0 10px}
+  .media .emoji{font-size:4.4rem;line-height:1;filter:drop-shadow(0 6px 6px rgba(0,0,0,.12));transition:transform .25s}
+  .media img{max-height:118px;max-width:90%;object-fit:contain;border-radius:18px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.15));transition:transform .25s;background:#fff}
+  .media img.photo{height:118px;width:118px;object-fit:cover;border-radius:50%;border:4px solid #fff}
+  .card:hover .media .emoji,.card:hover .media img{transform:scale(1.1) rotate(-5deg)}
+  .cat{position:relative;display:inline-block;font-family:'Baloo 2';font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px;color:var(--ink);background:var(--chip,#ffe0cf);padding:3px 10px;border-radius:999px;margin-bottom:6px}
+  .name{position:relative;font-family:'Baloo 2';font-weight:800;font-size:1.5rem;line-height:1.05;margin-bottom:8px}
+  .says{position:relative;font-size:1rem;font-weight:700;color:var(--coral);font-style:italic}
+  .phon{position:relative;font-size:.95rem;color:var(--soft);font-weight:600;margin-top:2px}
+  .phon b{color:var(--ink)}
+  .action{position:relative;font-size:.86rem;color:var(--soft);font-weight:600;margin-top:10px;display:flex;gap:6px;align-items:flex-start}
+  .action .pin{flex:none}
+  .del{position:absolute;top:12px;right:12px;width:26px;height:26px;border:none;border-radius:50%;background:#fff;color:#c9a;cursor:pointer;font-size:1rem;font-weight:800;line-height:1;box-shadow:0 2px 6px var(--shadow);opacity:0;transition:opacity .15s;z-index:3}
+  .card:hover .del{opacity:1}
+  .del:hover{background:#ffe0e0;color:#e0604a}
+  .empty{text-align:center;padding:60px 20px;color:var(--soft);font-weight:700;grid-column:1/-1}
+  .empty .big{font-size:3rem;display:block;margin-bottom:10px}
+
+  .overlay{position:fixed;inset:0;background:rgba(60,40,30,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+  .overlay.show{display:flex;animation:fade .2s}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{background:var(--cream);border-radius:26px;padding:26px 24px;width:100%;max-width:430px;box-shadow:0 20px 50px rgba(80,50,30,.4);animation:pop .35s cubic-bezier(.2,1.3,.5,1) both;max-height:90vh;overflow:auto}
+  .modal h2{font-family:'Baloo 2';font-weight:800;font-size:1.5rem;margin-bottom:4px}
+  .modal p.hint{color:var(--soft);font-weight:600;font-size:.9rem;margin-bottom:16px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-family:'Baloo 2';font-weight:700;font-size:.85rem;margin-bottom:5px}
+  .field input,.field select{width:100%;border:2px solid var(--line);border-radius:14px;padding:11px 14px;font-family:'Nunito';font-weight:600;font-size:.95rem;color:var(--ink);background:#fff;outline:none}
+  .field input:focus{border-color:var(--peach)}
+  .field small{color:var(--soft);font-weight:600;font-size:.78rem;display:block;margin-top:4px}
+  .emojipick{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .emojipick button{font-size:1.5rem;border:2px solid var(--line);background:#fff;border-radius:12px;width:44px;height:44px;cursor:pointer;line-height:1}
+  .emojipick button.sel{border-color:var(--coral);background:#fff2ec}
+  .modal-actions{display:flex;gap:10px;margin-top:18px}
+  .modal-actions button{flex:1;border:none;border-radius:16px;padding:13px;font-family:'Baloo 2';font-weight:700;font-size:1rem;cursor:pointer}
+  .btn-save{background:linear-gradient(180deg,var(--grass),#8cc47e);color:#fff;box-shadow:0 4px 0 #6fa862}
+  .btn-cancel{background:#f3e8db;color:var(--soft)}
+  .btn-save:active{transform:translateY(3px);box-shadow:0 1px 0 #6fa862}
+  footer{text-align:center;margin-top:40px;color:var(--soft);font-weight:600;font-size:.82rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="title">Animal Sounds <span class="em">🐾</span></div>
+    <div class="subtitle">What does each animal say? Tap, search, and add your own!</div>
+  </header>
+
+  <div class="controls">
+    <div class="search"><span class="ico">🔍</span><input id="search" type="text" placeholder="Search animals or sounds..."></div>
+    <select id="filter"></select>
+    <button class="addbtn" id="addBtn">+ Add animal</button>
+  </div>
+
+  <div class="moderow">
+    <div class="seg" id="modeseg">
+      <button data-m="emoji" class="on">🙂 Emoji</button>
+      <button data-m="cartoon">🎨 Cartoon</button>
+      <button data-m="photo">📷 Photo</button>
+    </div>
+  </div>
+
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+  <footer>The quiet ones — hare, rabbit, turtle &amp; fish — mostly use actions instead of sounds. 🤫</footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle">Add a new animal</h2>
+    <p class="hint">Fill in the details and it rebuilds the cards automatically.</p>
+    <div class="field">
+      <label>Pick an emoji</label>
+      <div class="emojipick" id="emojipick"></div>
+      <input id="f_emoji" type="text" placeholder="…or paste any emoji" maxlength="4" style="margin-top:8px">
+    </div>
+    <div class="field"><label>Animal name</label><input id="f_name" type="text" placeholder="e.g. Duck"></div>
+    <div class="field"><label>Category</label>
+      <select id="f_cat">
+        <option>Mammal</option><option>Fish</option><option>Fish (sea mammal)</option>
+        <option>Bird</option><option>Reptile</option><option>Amphibian</option><option>Insect</option><option>Other</option>
+      </select>
+    </div>
+    <div class="field"><label>Sound — "Says…" (e.g. Quacks)</label><input id="f_says" type="text" placeholder="e.g. Quacks"></div>
+    <div class="field"><label>Phonetically it's…</label><input id="f_phon" type="text" placeholder="e.g. quack-quack"></div>
+    <div class="field"><label>Action (optional)</label><input id="f_action" type="text" placeholder="e.g. Waddle and flap arms"></div>
+    <div class="field"><label>Image keyword (optional)</label><input id="f_img" type="text" placeholder="e.g. duck"><small>Used to fetch the cartoon &amp; photo. Defaults to the animal name.</small></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelBtn">Cancel</button>
+      <button class="btn-save" id="saveBtn">Save animal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CHIP={"Mammal":"#ffe0cf","Fish":"#cfe9f5","Fish (sea mammal)":"#cfe9f5","Bird":"#fff0c2","Reptile":"#d8f0cf","Amphibian":"#d8f0cf","Insect":"#ece0f5","Other":"#eee3d6"};
+const PICK_EMOJI=["🐶","🐱","🐮","🐴","🐷","🐑","🐐","🦁","🐵","🐭","🐘","🐺","🐢","🦓","🐰","🐟","🐬","🐳","🦭","🦆","🐸","🐝","🦉","🐔","🦒","🐧","🦒","🐦","🦌","🐻","🦊","🐸","🦢","🐴"];
+
+// img = keyword used to build cartoon + photo URLs
+const DEFAULTS=[
+  {emoji:"🐱",name:"Cat",cat:"Mammal",says:"Meows",phon:"meow / mee-ow (purr: rrrrr)",action:"Rub against legs, arch back",img:"cat"},
+  {emoji:"🐔",name:"Chicken",cat:"Bird",says:"Clucks",phon:"cluck-cluck / bok-bok",action:"Peck ground, flap elbows",img:"chicken"},
+  {emoji:"🐮",name:"Cow",cat:"Mammal",says:"Moos",phon:"moo / mooo",action:"Slow head sway, chew",img:"cattle"},
+  {emoji:"🐶",name:"Dog",cat:"Mammal",says:"Woofs",phon:"woof / bow-wow / arf",action:"Wag tail, pant, jump up",img:"dog"},
+  {emoji:"🐬",name:"Dolphin",cat:"Fish (sea mammal)",says:"Clicks",phon:"ee-ee-ee (clicks & whistles)",action:"Leap, dive, nod head",img:"dolphin"},
+  {emoji:"🦆",name:"Duck",cat:"Bird",says:"Quacks",phon:"quack-quack",action:"Waddle, flap, dabble",img:"duck"},
+  {emoji:"🐴",name:"Donkey",cat:"Mammal",says:"Brays",phon:"ee-aw / hee-haw",action:"Big nod, kick, flick ears",img:"donkey"},
+  {emoji:"🐘",name:"Elephant",cat:"Mammal",says:"Trumpets",phon:"pawoo",action:"Swing arm as trunk, stomp",img:"elephant"},
+  {emoji:"🐟",name:"Fish",cat:"Fish",says:"Blubs",phon:"blub-blub / glub",action:"Pucker lips, wave hands as fins",img:"goldfish"},
+  {emoji:"🐸",name:"Frog",cat:"Amphibian",says:"Croaks",phon:"ribbit / croak",action:"Squat and big hop",img:"frog"},
+  {emoji:"🐐",name:"Goat",cat:"Mammal",says:"Bleats",phon:"maa / naa",action:"Headbutt, hop",img:"goat"},
+  {emoji:"🐹",name:"Hamster",cat:"Mammal",says:"Squeaks",phon:"squeak / chirp",action:"Stuff cheeks, scurry",img:"hamster"},
+  {emoji:"🐰",name:"Hare",cat:"Mammal",says:"Mostly silent",phon:"eee scream if scared; soft grunts",action:"Thump feet, big leaps",img:"hare"},
+  {emoji:"🐴",name:"Horse",cat:"Mammal",says:"Neighs",phon:"neigh / whinny hee-hee-hee",action:"Gallop, paw ground, toss head",img:"horse"},
+  {emoji:"🦁",name:"Lion",cat:"Mammal",says:"Roars",phon:"roar / rrroar",action:"Big stretch, paw swipe, prowl",img:"lion"},
+  {emoji:"🐵",name:"Monkey",cat:"Mammal",says:"Hoots",phon:"ooh-ooh-aah-aah",action:"Scratch, swing arms, hop",img:"monkey"},
+  {emoji:"🐭",name:"Mouse",cat:"Mammal",says:"Squeaks",phon:"squeak / eek",action:"Tiny scurrying steps, nibble",img:"mouse"},
+  {emoji:"🦉",name:"Owl",cat:"Bird",says:"Hoots",phon:"hoo-hoo / twit-twoo",action:"Big eyes, slow head turn",img:"owl"},
+  {emoji:"🐷",name:"Pig",cat:"Mammal",says:"Oinks",phon:"oink / snort",action:"Snuffle ground, wiggle",img:"pig"},
+  {emoji:"🐰",name:"Rabbit",cat:"Mammal",says:"Mostly quiet",phon:"soft purr/click; eee scream if scared",action:"Thump feet, hop, twitch nose",img:"rabbit"},
+  {emoji:"🦭",name:"Seal",cat:"Fish (sea mammal)",says:"Barks",phon:"ark-ark / ow-ow",action:"Clap hands as flippers, belly shuffle",img:"seal"},
+  {emoji:"🐑",name:"Sheep",cat:"Mammal",says:"Baas",phon:"baa / baaa",action:"Gentle bouncing, huddle",img:"sheep"},
+  {emoji:"🐢",name:"Turtle",cat:"Reptile",says:"Mostly silent",phon:"soft hiss / low grunt hmph",action:"Slow crawl, tuck head in",img:"turtle"},
+  {emoji:"🐳",name:"Whale",cat:"Fish (sea mammal)",says:"Sings",phon:"wooooo / long low mmmooo",action:"Slow arm waves, big spout",img:"whale"},
+  {emoji:"🐺",name:"Wolf",cat:"Mammal",says:"Howls",phon:"awooo",action:"Head back to howl, prowl",img:"wolf"},
+  {emoji:"🦓",name:"Zebra",cat:"Mammal",says:"Barks",phon:"kwa-ha-ha; high ee-aw; snorts",action:"Trot, kick, toss head",img:"zebra"},
+];
+
+// Cartoon: keyless flat animal illustrations from openmoji (consistent set, SVG, by name).
+// Photo: real photo fetched live from Wikipedia's REST summary API (CORS-enabled), cached.
+const OPENMOJI={ // emoji -> OpenMoji hex code for the matching cartoon glyph
+  "🐶":"1F436","🐱":"1F431","🐮":"1F42E","🐴":"1F434","🐷":"1F437","🐑":"1F411","🐐":"1F410",
+  "🦁":"1F981","🐵":"1F435","🐭":"1F42D","🐘":"1F418","🐺":"1F43A","🐢":"1F422","🦓":"1F993",
+  "🐰":"1F430","🐟":"1F41F","🐬":"1F42C","🐳":"1F433","🦭":"1F9AD","🦆":"1F986","🐸":"1F438",
+  "🐝":"1F41D","🦉":"1F989","🐔":"1F414","🦒":"1F992","🐧":"1F427","🐹":"1F439","🐻":"1F43B",
+  "🦊":"1F98A","🦌":"1F98C","🦢":"1F9A2","🐦":"1F426"
+};
+function cartoonURL(a){
+  const code=OPENMOJI[a.emoji]||"1F43E"; // paw print fallback
+  return `https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@14.0.0/color/svg/${code}.svg`;
+}
+const photoCache={};
+function fetchPhoto(kw,imgEl,emoji){
+  const key=kw.toLowerCase();
+  const apply=url=>{ if(url){imgEl.src=url;} else {imgEl.outerHTML=`<span class="emoji">${emoji}</span>`;} };
+  if(photoCache[key]!==undefined){apply(photoCache[key]);return;}
+  const title=encodeURIComponent(kw.replace(/\b\w/g,c=>c.toUpperCase()));
+  fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`)
+    .then(r=>r.ok?r.json():Promise.reject())
+    .then(d=>{const u=(d.thumbnail&&d.thumbnail.source)||null;photoCache[key]=u;apply(u);})
+    .catch(()=>{photoCache[key]=null;apply(null);});
+}
+
+let animals=[], mode="emoji";
+const KEY="animal-sounds:list:v2", MKEY="animal-sounds:mode";
+
+async function load(){
+  try{const r=await window.storage.get(KEY);animals=r&&r.value?JSON.parse(r.value):DEFAULTS.slice();}
+  catch(e){animals=DEFAULTS.slice();}
+  try{const m=await window.storage.get(MKEY);if(m&&m.value)mode=m.value;}catch(e){}
+  document.querySelectorAll('#modeseg button').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));
+  buildFilter();render();
+}
+async function save(){try{await window.storage.set(KEY,JSON.stringify(animals));}catch(e){}}
+async function saveMode(){try{await window.storage.set(MKEY,mode);}catch(e){}}
+
+const grid=document.getElementById('grid'),filterSel=document.getElementById('filter'),
+      searchEl=document.getElementById('search'),countEl=document.getElementById('count');
+
+function buildFilter(){
+  const cats=[...new Set(animals.map(a=>a.cat))].sort();
+  const cur=filterSel.value||"All";
+  filterSel.innerHTML='<option value="All">All animals</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  filterSel.value=[...filterSel.options].some(o=>o.value===cur)?cur:"All";
+}
+
+function mediaHTML(a,idx){
+  const emoji=`<span class="emoji">${a.emoji||"🐾"}</span>`;
+  if(mode==="emoji")return emoji;
+  if(mode==="cartoon")
+    return `<img src="${cartoonURL(a)}" alt="${esc(a.name)}" onerror="this.onerror=null;this.outerHTML='<span class=\\'emoji\\'>${a.emoji||"🐾"}</span>'">`;
+  // photo: render placeholder emoji, then swap in fetched photo
+  return `<img class="photo" data-photo="${idx}" alt="${esc(a.name)}" style="background:#fff">`;
+}
+
+function render(){
+  const q=searchEl.value.trim().toLowerCase(),f=filterSel.value;
+  const list=animals.map((a,i)=>({a,i}))
+    .filter(({a})=>(f==="All"||a.cat===f)&&(!q||a.name.toLowerCase().includes(q)||(a.says||'').toLowerCase().includes(q)||(a.phon||'').toLowerCase().includes(q)))
+    .sort((x,y)=>x.a.name.localeCompare(y.a.name));
+  countEl.textContent=`${list.length} animal${list.length!==1?'s':''}`;
+  if(!list.length){grid.innerHTML=`<div class="empty"><span class="big">🐾</span>No animals found. Try a different search or add one!</div>`;return;}
+  grid.innerHTML=list.map(({a,i},n)=>{
+    const chip=CHIP[a.cat]||"#eee3d6";
+    return `<div class="card" style="--chip:${chip};animation-delay:${n*0.04}s">
+      <button class="del" data-i="${i}" title="Remove">×</button>
+      <div class="media">${mediaHTML(a,i)}</div>
+      <span class="cat">${esc(a.cat)}</span>
+      <div class="name">${esc(a.name)}</div>
+      <div class="says">${esc(a.says||'')}…</div>
+      <div class="phon">Phonetically it's <b>${esc(a.phon||'')}</b></div>
+      ${a.action?`<div class="action"><span class="pin">🎭</span><span>${esc(a.action)}</span></div>`:''}
+    </div>`;
+  }).join('');
+  if(mode==="photo"){
+    grid.querySelectorAll('img[data-photo]').forEach(img=>{
+      const a=animals[+img.dataset.photo];
+      fetchPhoto(a.img||a.name,img,a.emoji||"🐾");
+    });
+  }
+  grid.querySelectorAll('.del').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(confirm(`Remove ${animals[i].name}?`)){animals.splice(i,1);save();buildFilter();render();}});
+}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+searchEl.oninput=render;filterSel.onchange=render;
+document.querySelectorAll('#modeseg button').forEach(b=>b.onclick=()=>{
+  mode=b.dataset.m;saveMode();
+  document.querySelectorAll('#modeseg button').forEach(x=>x.classList.toggle('on',x===b));
+  render();
+});
+
+const overlay=document.getElementById('overlay'),pickEl=document.getElementById('emojipick');
+let chosenEmoji="🐾";
+pickEl.innerHTML=[...new Set(PICK_EMOJI)].map(e=>`<button data-e="${e}">${e}</button>`).join('');
+pickEl.querySelectorAll('button').forEach(b=>b.onclick=()=>{chosenEmoji=b.dataset.e;document.getElementById('f_emoji').value="";pickEl.querySelectorAll('button').forEach(x=>x.classList.toggle('sel',x===b));});
+document.getElementById('f_emoji').oninput=e=>{if(e.target.value){chosenEmoji=e.target.value;pickEl.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));}};
+
+function openModal(){['f_name','f_says','f_phon','f_action','f_emoji','f_img'].forEach(id=>document.getElementById(id).value='');document.getElementById('f_cat').value='Mammal';chosenEmoji="🐾";pickEl.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));overlay.classList.add('show');document.getElementById('f_name').focus();}
+function closeModal(){overlay.classList.remove('show');}
+document.getElementById('addBtn').onclick=openModal;
+document.getElementById('cancelBtn').onclick=closeModal;
+overlay.onclick=e=>{if(e.target===overlay)closeModal();};
+document.getElementById('saveBtn').onclick=()=>{
+  const name=document.getElementById('f_name').value.trim();
+  if(!name){alert('Please enter an animal name.');return;}
+  animals.push({
+    emoji:chosenEmoji||"🐾",name,
+    cat:document.getElementById('f_cat').value,
+    says:document.getElementById('f_says').value.trim()||"Says",
+    phon:document.getElementById('f_phon').value.trim(),
+    action:document.getElementById('f_action').value.trim(),
+    img:(document.getElementById('f_img').value.trim()||name).toLowerCase()
+  });
+  save();buildFilter();searchEl.value='';filterSel.value='All';render();closeModal();
+};
+
+load();
+</script>
+</body>
+</html>
